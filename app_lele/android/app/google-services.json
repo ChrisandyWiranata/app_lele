@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "850441323852",
+    "project_id": "applele-54888",
+    "storage_bucket": "applele-54888.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850441323852:android:bfdda4b4d6f354217cbbe9",
+        "android_client_info": {
+          "package_name": "com.example.app_lele"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Ft1E0O-EPzMOFThu2gw7kuGpUGuZpgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

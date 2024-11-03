@@ -1,4 +1,3 @@
-import 'package:app_lele/screen/home.dart';
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/screen/signup.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';

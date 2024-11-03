@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(width: 15),
                       const Text(
                         'Log Out',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),

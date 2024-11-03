@@ -1,4 +1,5 @@
 import 'package:app_lele/screen/home.dart';
+import 'package:app_lele/screen/home/add_product.dart';
 import 'package:app_lele/screen/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -68,6 +69,9 @@ class _MainScreenState extends State<MainScreen> {
           onTap: _onTap,
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen()));
+      }, child: const Icon(Icons.add),),
     );
   }
 }

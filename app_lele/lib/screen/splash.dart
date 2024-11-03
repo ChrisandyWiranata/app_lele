@@ -1,4 +1,4 @@
-import 'package:app_lele/screen/home.dart';
+import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/screen/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => isLogin ?? false ? const HomeScreen() : const SignInScreen()),
+        MaterialPageRoute(builder: (context) => isLogin ?? false ? const MainScreen() : const SignInScreen()),
       );
     });
   }

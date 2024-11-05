@@ -1,5 +1,6 @@
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:app_lele/database/product_database.dart';
 import 'package:app_lele/model/product.dart';
@@ -17,6 +18,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _priceController = TextEditingController();
   final _imageController = TextEditingController();
   final DatabaseHelper _dbHelper = DatabaseHelper();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   void dispose() {
@@ -36,6 +38,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       await _dbHelper.insertProduct(product);
       if (mounted) {
+        analytics.logEvent(name: 'add_product', parameters: {'product_name': product.name});
         ToastHelper.showSuccess(context: context, message: 'Product added successfully');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
       }

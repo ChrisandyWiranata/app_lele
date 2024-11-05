@@ -26,6 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: const Text('Profile'),
+        automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.grey[100],
       body: SafeArea(

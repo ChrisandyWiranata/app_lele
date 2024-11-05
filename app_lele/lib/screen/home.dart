@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: const Text('Home', style: TextStyle(color: Colors.black)),
+        automaticallyImplyLeading: false, 
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -1,3 +1,4 @@
+import 'package:app_lele/screen/chat.dart';
 import 'package:app_lele/screen/home.dart';
 import 'package:app_lele/screen/home/add_product.dart';
 import 'package:app_lele/screen/profile.dart';
@@ -69,9 +70,9 @@ class _MainScreenState extends State<MainScreen> {
           onTap: _onTap,
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
+      floatingActionButton: _currentIndex == 0 ? FloatingActionButton(onPressed: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen()));
-      }, child: const Icon(Icons.add),),
+      }, child: const Icon(Icons.add),) : null
     );
   }
 }

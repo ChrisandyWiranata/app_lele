@@ -1,5 +1,6 @@
 import 'package:app_lele/database/product_database.dart';
 import 'package:app_lele/screen/home/detail_product.dart';
+import 'package:app_lele/screen/list_chat.dart';
 import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/widgets/product.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: const Text('Home', style: TextStyle(color: Colors.black)),
         automaticallyImplyLeading: false, 
+        actions: [
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ListChatScreeen()));
+          }, icon: const Icon(Icons.chat, color: Colors.blue, size: 30,))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -14,6 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   void logout() async {
+    auth.signOut();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('login', false);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SignInScreen()));

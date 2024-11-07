@@ -1,5 +1,6 @@
 import 'package:app_lele/screen/signin.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,13 +19,19 @@ class _SignInPage1State extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   
   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void register() async {
     try {
-      final res = await auth.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim()
+      UserCredential res = await auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text
       );
+
+      await firestore.collection('users').doc(res.user!.uid).set({
+        'email': _emailController.text,
+        'uid': res.user!.uid,
+      });
       
       if (res.user != null) {
         ToastHelper.showSuccess(context: context, message: 'Berhasil buat akun');

@@ -1,8 +1,8 @@
 import 'package:app_lele/screen/main_screen.dart';
+import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:app_lele/database/product_database.dart';
 import 'package:app_lele/model/product.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -17,8 +17,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _imageController = TextEditingController();
-  final DatabaseHelper _dbHelper = DatabaseHelper();
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final ProductService _productService = ProductService();
 
   @override
   void dispose() {
@@ -36,11 +36,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
         image: _imageController.text,
       );
 
-      await _dbHelper.insertProduct(product);
+      await _productService.addProduct(product);
       if (mounted) {
-        analytics.logEvent(name: 'add_product', parameters: {'product_name': product.name});
-        ToastHelper.showSuccess(context: context, message: 'Product added successfully');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+        analytics.logEvent(
+            name: 'add_product', parameters: {'product_name': product.name});
+        ToastHelper.showSuccess(
+            context: context, message: 'Product added successfully');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MainScreen()));
       }
     }
   }

@@ -1,10 +1,22 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:app_lele/model/product.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductService {
-  Future<List<dynamic>> fetchProducts() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/products'));
-    final json = jsonDecode(response.body);
-    return json;
+  final productsCollection = FirebaseFirestore.instance.collection('products');
+
+  Stream<QuerySnapshot> getProducts() {
+    return productsCollection.snapshots();
+  }
+
+  Future<void> addProduct(ProductModel product) {
+    return productsCollection.add(product.toMap());
+  }
+
+  Future<void> updateProduct(String id, ProductModel product) {
+    return productsCollection.doc(id).update(product.toMap());
+  }
+
+  Future<void> deleteProduct(String id) {
+    return productsCollection.doc(id).delete();
   }
 }

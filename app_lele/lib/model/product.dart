@@ -1,5 +1,5 @@
 class ProductModel {
-  final int? id;
+  final String? id;
   final String name;
   final int price;
   final String image;
@@ -22,7 +22,6 @@ class ProductModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'price': price,
       'image': image,

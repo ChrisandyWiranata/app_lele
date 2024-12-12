@@ -1,8 +1,8 @@
 import 'package:app_lele/screen/main_screen.dart';
+import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:app_lele/database/product_database.dart';
 import 'package:app_lele/model/product.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -19,14 +19,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   late TextEditingController _imageController;
-  final DatabaseHelper _dbHelper = DatabaseHelper();
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  final ProductService _productService = ProductService();
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product.name);
-    _priceController = TextEditingController(text: widget.product.price.toString());
+    _priceController =
+        TextEditingController(text: widget.product.price.toString());
     _imageController = TextEditingController(text: widget.product.image);
   }
 
@@ -50,16 +51,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
 
     if (confirm == true) {
-      await _dbHelper.deleteProduct(widget.product.id!);
+      await _productService.deleteProduct(widget.product.id!);
+
       if (mounted) {
-        analytics.logEvent(name: 'delete_product', parameters: {'product_name': widget.product.name});
-        ToastHelper.showSuccess(context: context, message: 'Delete successfully');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+        analytics.logEvent(
+            name: 'delete_product',
+            parameters: {'product_name': widget.product.name});
+        ToastHelper.showSuccess(
+            context: context, message: 'Delete successfully');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MainScreen()));
       }
     }
   }
 
-   void _updateProduct() async {
+  void _updateProduct() async {
     if (_formKey.currentState!.validate()) {
       final updatedProduct = ProductModel(
         id: widget.product.id,
@@ -68,11 +74,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
         image: _imageController.text,
       );
 
-      await _dbHelper.updateProduct(updatedProduct);
+      await _productService.updateProduct(widget.product.id!, updatedProduct);
+
       if (mounted) {
-        analytics.logEvent(name: 'edit_product', parameters: {'product_name': widget.product.name});
+        analytics.logEvent(
+            name: 'edit_product',
+            parameters: {'product_name': widget.product.name});
         ToastHelper.showSuccess(context: context, message: 'Edit successfully');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MainScreen()));
       }
     }
   }

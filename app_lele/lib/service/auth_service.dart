@@ -28,14 +28,13 @@ class AuthService {
     return userCollection
         .doc(currentUser.uid)
         .snapshots()
-        .asyncMap((userDoc) async {
+        .asyncExpand((userDoc) {
       final currentUserRole = userDoc.data()?['role'] ?? 'user';
-      final roleQuery = currentUserRole == 'admin' ? 'user' : 'admin';
-
-      return userCollection
-          .where('role', isEqualTo: roleQuery)
-          .snapshots()
-          .first;
+      if (currentUserRole == 'admin') {
+        return userCollection.where('role', isEqualTo: 'user').snapshots();
+      } else {
+        return userCollection.where('role', isEqualTo: 'admin').snapshots();
+      }
     });
   }
 

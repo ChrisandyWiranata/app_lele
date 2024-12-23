@@ -27,7 +27,7 @@ class NotificationController extends ChangeNotifier {
 
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-      'resource://drawable/logo',
+      'resource://drawable/ic_launcher',
       [
         NotificationChannel(
             channelKey: 'notif_message_channel',

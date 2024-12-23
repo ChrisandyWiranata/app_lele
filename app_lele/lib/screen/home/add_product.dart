@@ -1,3 +1,4 @@
+import 'package:app_lele/components/custom_text_field.dart';
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
@@ -16,7 +17,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _imageController = TextEditingController();
+
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final ProductService _productService = ProductService();
 
@@ -33,6 +36,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final product = ProductModel(
         name: _nameController.text,
         price: int.parse(_priceController.text),
+        description: _descriptionController.text,
         image: _imageController.text,
       );
 
@@ -62,12 +66,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              CustomTextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Product Name',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Product Name',
+                hint: 'Product Name',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter product name';
@@ -76,14 +78,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              CustomTextField(
                 controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(),
-                  prefixText: 'Rp ',
-                ),
-                keyboardType: TextInputType.number,
+                label: 'Price',
+                hint: 'Rp ',
+                isInputNumber: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter price';
@@ -92,12 +91,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              CustomTextField(
+                controller: _descriptionController,
+                label: 'Description Product',
+                hint: 'Description Product',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter description product';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              CustomTextField(
                 controller: _imageController,
-                decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Image URL',
+                hint: 'Image URL',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter image URL';

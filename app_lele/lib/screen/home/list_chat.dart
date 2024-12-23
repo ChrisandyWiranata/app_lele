@@ -98,7 +98,7 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                       IconButton(
                         onPressed: () {
                           Navigator.pop(context);
-                        }, 
+                        },
                         icon: const Icon(Icons.arrow_back_ios),
                       ),
                       Transform(
@@ -132,7 +132,7 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                           ),
                         );
                       }
-                      
+
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return const Center(
                           child: Text('No users available'),
@@ -149,7 +149,8 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                               ..setEntry(3, 2, 0.001)
                               ..rotateX(0.01),
                             child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
@@ -173,7 +174,8 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ChatScreen(
-                                        currentUserUid: FirebaseAuth.instance.currentUser!.uid,
+                                        currentUserUid: FirebaseAuth
+                                            .instance.currentUser!.uid,
                                         selectedUser: user,
                                       ),
                                     ),
@@ -184,7 +186,8 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                                     child: Row(
                                       children: [
                                         ClipOval(
-                                          child: Image.network('https://media1.tenor.com/m/gmVSlMk1D6sAAAAd/bocchi-bocchi-the-rock.gif',
+                                          child: Image.network(
+                                            'https://media1.tenor.com/m/gmVSlMk1D6sAAAAd/bocchi-bocchi-the-rock.gif',
                                             width: 70,
                                             height: 70,
                                             fit: BoxFit.cover,
@@ -193,7 +196,8 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                                         const SizedBox(width: 16),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 user['username'],

@@ -1,3 +1,4 @@
+import 'package:app_lele/components/custom_text_field.dart';
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/widgets/useable/custom_toast.dart';
@@ -18,6 +19,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _priceController;
+  late TextEditingController _descriptionController;
   late TextEditingController _imageController;
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final ProductService _productService = ProductService();
@@ -26,6 +28,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product.name);
+    _descriptionController =
+        TextEditingController(text: widget.product.description);
     _priceController =
         TextEditingController(text: widget.product.price.toString());
     _imageController = TextEditingController(text: widget.product.image);
@@ -71,6 +75,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         id: widget.product.id,
         name: _nameController.text,
         price: int.parse(_priceController.text),
+        description: _descriptionController.text,
         image: _imageController.text,
       );
 
@@ -115,12 +120,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              CustomTextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Product Name',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Product Name',
+                hint: 'Product Name',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter product name';
@@ -129,14 +132,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              CustomTextField(
                 controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(),
-                  prefixText: 'Rp ',
-                ),
-                keyboardType: TextInputType.number,
+                label: 'Price',
+                hint: 'Rp ',
+                isInputNumber: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter price';
@@ -145,12 +145,22 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              CustomTextField(
+                controller: _descriptionController,
+                label: 'Description Product',
+                hint: 'Description Product',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter description product';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              CustomTextField(
                 controller: _imageController,
-                decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Image URL',
+                hint: 'Image URL',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter image URL';

@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final place = placemarks[0];
     setState(() {
       currentAddress =
-          '${place.subLocality}, ${place.locality}, ${place.country}';
+          '${place.street} - ${place.postalCode}, ${place.subAdministrativeArea} - ${place.locality} - ${place.administrativeArea} - ${place.country}';
     });
   }
 

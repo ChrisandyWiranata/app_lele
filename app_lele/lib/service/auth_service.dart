@@ -14,6 +14,7 @@ class AuthService {
         'username': username,
         'phoneNumber': phoneNumber,
         'role': 'user',
+        'imageProfile': '',
         'createdAt': Timestamp.now(),
       });
     } catch (e) {
@@ -45,12 +46,13 @@ class AuthService {
         .map((snapshot) => snapshot.data()!);
   }
 
-  Future<void> updateUser(
-      String uid, String username, String phoneNumber) async {
+  Future<void> updateUser(String uid, String username, String phoneNumber,
+      String imageProfile) async {
     try {
       await userCollection.doc(uid).update({
         'username': username,
         'phoneNumber': phoneNumber,
+        'imageProfile': imageProfile,
       });
     } catch (e) {
       throw Exception('Failed to update user: $e');
@@ -68,5 +70,13 @@ class AuthService {
             .update({'fcmToken': firebaseToken});
       }
     }
+  }
+
+  Future<Map?> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    final userDoc = await userCollection.doc(user.uid).get();
+    return userDoc.data();
   }
 }

@@ -1,5 +1,8 @@
 import 'package:app_lele/components/app_colors.dart';
 import 'package:app_lele/screen/home/edit_product.dart';
+import 'package:app_lele/screen/home/report_product.dart';
+import 'package:app_lele/service/auth_service.dart';
+import 'package:app_lele/service/product_service.dart';
 import 'package:app_lele/utils/currency_format.dart';
 import 'package:flutter/material.dart';
 import 'package:app_lele/model/product.dart';
@@ -14,6 +17,68 @@ class DetailProductScreen extends StatefulWidget {
 }
 
 class _DetailProductScreenState extends State<DetailProductScreen> {
+  bool isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserRole();
+  }
+
+  Future<void> _checkUserRole() async {
+    final user = await AuthService().getCurrentUser();
+    if (user?['role'] == 'admin') {
+      setState(() {
+        isAdmin = true;
+      });
+    }
+  }
+
+  void _reportProduct() async {
+    final TextEditingController reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Report Product'),
+          content: TextField(
+            controller: reasonController,
+            decoration: const InputDecoration(
+              hintText: 'Enter reason for reporting',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final reason = reasonController.text.trim();
+                if (reason.isNotEmpty) {
+                  await ProductService()
+                      .reportProduct(widget.product.id!, reason);
+                  if (mounted) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pop();
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Product reported successfully')),
+                    );
+                  }
+                }
+              },
+              child: const Text('Report'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,21 +117,50 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                             onPressed: () => Navigator.pop(context),
                           ),
                         ),
-                        CircleAvatar(
-                          backgroundColor: AppColors.curelean.withOpacity(0.7),
-                          child: IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.white),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProductScreen(
-                                    product: widget.product,
-                                  ),
+                        Column(
+                          children: [
+                            if (isAdmin)
+                              CircleAvatar(
+                                backgroundColor:
+                                    AppColors.curelean.withOpacity(0.7),
+                                child: IconButton(
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditProductScreen(
+                                          product: widget.product,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            CircleAvatar(
+                              backgroundColor:
+                                  AppColors.curelean.withOpacity(0.7),
+                              child: IconButton(
+                                  icon: const Icon(Icons.report_problem,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    isAdmin
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ReportProductScreen(
+                                                      productId:
+                                                          widget.product.id!,
+                                                    )))
+                                        : _reportProduct();
+                                  }),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -132,25 +226,6 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: AppColors.curelean,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    child: const Text(
-                      'Add to Cart',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ],

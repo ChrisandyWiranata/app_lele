@@ -12,6 +12,7 @@ void main() async {
   await MobileAds.instance.initialize();
   await Firebase.initializeApp();
   await initializeLocationPermission();
+  await requestNotificationPermissions();
 
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeRemoteNotifications(debug: true);
@@ -28,6 +29,14 @@ Future<void> initializeLocationPermission() async {
 }
 
 Future<void> initializeNotification() async {
+  await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  });
+}
+
+Future<void> requestNotificationPermissions() async {
   await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       AwesomeNotifications().requestPermissionToSendNotifications();

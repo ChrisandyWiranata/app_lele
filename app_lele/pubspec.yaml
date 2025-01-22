@@ -40,6 +40,10 @@ flutter:
 
   assets:
     - assets/images/logo.png
+    - assets/images/welcome.png
+    - assets/images/accept.png
+    - assets/images/privacy.png
+    - assets/images/account.png
 
   fonts:
     - family: Poppins

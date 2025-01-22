@@ -1,7 +1,7 @@
 import 'package:app_lele/components/custom_text_field.dart';
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/service/product_service.dart';
-import 'package:app_lele/widgets/useable/custom_toast.dart';
+import 'package:app_lele/components/custom_toast.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:app_lele/model/product.dart';

@@ -1,6 +1,7 @@
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/screen/auth/signin.dart';
 import 'package:app_lele/components/app_colors.dart';
+import 'package:app_lele/screen/terms_and_condition.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,21 +12,32 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
   Future<void> initialApp() async {
     final prefs = await SharedPreferences.getInstance();
-    final isLogin = prefs.getBool('login');
+    final isLogin = prefs.getBool('login') ?? false;
+    final isFirstTime = prefs.getBool('firstTime') ?? true;
 
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => isLogin ?? false ? const MainScreen() : const SignInScreen()),
-        );
+        if (isFirstTime) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TermsAndConditionsScreen()));
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    isLogin ? const MainScreen() : const SignInScreen()),
+          );
+        }
       }
     });
   }
@@ -116,7 +128,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   ),
                   const SizedBox(height: 15),
                   const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.bluetopaz),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.bluetopaz),
                   ),
                 ],
               ),

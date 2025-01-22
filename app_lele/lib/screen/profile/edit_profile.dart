@@ -16,12 +16,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _usernameController;
   late TextEditingController _phoneController;
+  late TextEditingController _imageController;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(text: widget.userData['username']);
-    _phoneController = TextEditingController(text: widget.userData['phoneNumber']);
+    _usernameController =
+        TextEditingController(text: widget.userData['username']);
+    _phoneController =
+        TextEditingController(text: widget.userData['phoneNumber']);
+    _imageController =
+        TextEditingController(text: widget.userData['imageProfile']);
   }
 
   void _updateProfile() async {
@@ -30,6 +35,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         FirebaseAuth.instance.currentUser!.uid,
         _usernameController.text,
         _phoneController.text,
+        _imageController.text,
       );
       if (mounted) {
         Navigator.pop(context);
@@ -59,50 +65,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           key: _formKey,
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: AppColors.bluetopaz.withOpacity(0.1),
-                    child: const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: AppColors.bluetopaz,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: AppColors.bluetopaz,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
               CustomTextField(
                 controller: _usernameController,
                 label: 'Username',
                 hint: 'Enter your Username',
-                icon: Icons.phone,
+                icon: Icons.person,
                 validator: (value) {
                   if (value?.isEmpty ?? true) return 'Username is required';
                   return null;
                 },
               ),
-              
               const SizedBox(height: 20),
-
               CustomTextField(
                 controller: _phoneController,
                 label: 'Phone Number',
@@ -113,6 +86,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   if (value?.isEmpty ?? true) return 'Phone Number is required';
                   return null;
                 },
+              ),
+              const SizedBox(height: 20),
+              CustomTextField(
+                controller: _imageController,
+                label: 'Image Profile',
+                hint: 'https://',
+                icon: Icons.camera,
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -126,7 +106,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Save Changes', style: TextStyle(color: Colors.white),),
+                  child: const Text(
+                    'Save Changes',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],

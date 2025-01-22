@@ -186,12 +186,25 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                                     child: Row(
                                       children: [
                                         ClipOval(
-                                          child: Image.network(
-                                            'https://media1.tenor.com/m/gmVSlMk1D6sAAAAd/bocchi-bocchi-the-rock.gif',
-                                            width: 70,
-                                            height: 70,
-                                            fit: BoxFit.cover,
-                                          ),
+                                          child: user['imageProfile'] != null &&
+                                                  user['imageProfile'] != ''
+                                              ? Image.network(
+                                                  width: 70,
+                                                  height: 70,
+                                                  user['imageProfile'],
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundColor: AppColors
+                                                      .bluetopaz
+                                                      .withOpacity(0.1),
+                                                  child: const Icon(
+                                                    Icons.person,
+                                                    size: 30,
+                                                    color: AppColors.bluetopaz,
+                                                  ),
+                                                ),
                                         ),
                                         const SizedBox(width: 16),
                                         Expanded(
@@ -205,14 +218,6 @@ class _ListChatScreeenState extends State<ListChatScreeen> {
                                                   color: AppColors.curelean,
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              const Text(
-                                                'Online',
-                                                style: TextStyle(
-                                                  color: AppColors.bluetopaz,
-                                                  fontSize: 14,
                                                 ),
                                               ),
                                             ],

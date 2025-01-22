@@ -22,15 +22,24 @@ class _HomeScreenState extends State<HomeScreen> {
   InterstitialAd? _interstitialAd;
   final String adUnitId = 'ca-app-pub-3940256099942544/1033173712';
 
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
     _loadInterstitialAd();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.trim().toLowerCase();
+      });
+    });
   }
 
   @override
   void dispose() {
     _interstitialAd?.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -59,57 +68,65 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _refreshData() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.icicle,
       body: Stack(
         children: [
-          // Decorative wave background
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 200,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.bluetopaz,
-                    AppColors.curelean,
-                  ],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
-                ),
+          _buildBackground(),
+          RefreshIndicator(
+            onRefresh: _refreshData,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  _buildSearchBar(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          _buildProductList(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-
-          // Main Content
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        _buildSearchBar(),
-                        _buildCategories(),
-                        _buildFeaturedProducts(),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      height: 200,
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.bluetopaz,
+              AppColors.curelean,
+            ],
+          ),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(40),
+            bottomRight: Radius.circular(40),
+          ),
+        ),
       ),
     );
   }
@@ -150,9 +167,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ListChatScreeen()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ListChatScreeen(),
+                  ),
+                );
               },
               icon: const Icon(Icons.support_agent, color: Colors.white),
             ),
@@ -178,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       child: TextField(
+        controller: _searchController,
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         decoration: InputDecoration(
           hintText: 'Search products...',
@@ -189,37 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategories() {
-    final categories = ['All', 'Popular', 'Recent', 'Recommended'];
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: index == 0 ? AppColors.curelean : Colors.white,
-                foregroundColor: index == 0 ? Colors.white : AppColors.curelean,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(categories[index]),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildFeaturedProducts() {
+  Widget _buildProductList() {
     return StreamBuilder<QuerySnapshot>(
       stream: ProductService().getProducts(),
       builder: (context, snapshot) {
@@ -232,33 +222,18 @@ class _HomeScreenState extends State<HomeScreen> {
             return ProductModel.fromMap({...data, 'id': doc.id});
           }).toList();
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  "Featured Products",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.curelean,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              SizedBox(
-                height: 300,
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return _buildProductCard(products[index]);
-                  },
-                ),
-              ),
-            ],
+          final filteredProducts = products.where((product) {
+            return product.name.toLowerCase().contains(_searchQuery);
+          }).toList();
+
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filteredProducts.length,
+            itemBuilder: (context, index) {
+              return _buildProductCard(filteredProducts[index]);
+            },
           );
         }
         return const SizedBox();
@@ -282,8 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Container(
-        width: 200,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        margin: const EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -308,47 +282,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.curelean,
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.curelean,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      Text(
+                        CurrencyFormat.format(data.price.toString()),
+                        style: const TextStyle(
+                          color: AppColors.bluetopaz,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        const Icon(Icons.star,
-                            size: 16, color: AppColors.sunrise),
-                        const SizedBox(width: 4),
-                        const Text(
-                          '4.5',
-                          style: TextStyle(
-                            color: AppColors.curelean,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          CurrencyFormat.format(data.price.toString()),
-                          style: const TextStyle(
-                            color: AppColors.bluetopaz,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

@@ -1,7 +1,7 @@
 import 'package:app_lele/components/custom_text_field.dart';
 import 'package:app_lele/screen/auth/signin.dart';
 import 'package:app_lele/service/auth_service.dart';
-import 'package:app_lele/widgets/useable/custom_toast.dart';
+import 'package:app_lele/components/custom_toast.dart';
 import 'package:app_lele/components/app_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +14,8 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
+class _SignUpScreenState extends State<SignUpScreen>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-  
+
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -49,24 +50,24 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
   void register() async {
     try {
       UserCredential res = await auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text
-      );
-      
+          email: _emailController.text, password: _passwordController.text);
+
       if (res.user != null) {
-        await AuthService().createUser(_emailController.text, res.user!.uid, _usernameController.text, _phoneController.text);
+        await AuthService().createUser(_emailController.text, res.user!.uid,
+            _usernameController.text, _phoneController.text);
         if (mounted) {
-          ToastHelper.showSuccess(context: context, message: 'Berhasil buat akun');
-          Navigator.pushReplacement(
-            context, 
-            MaterialPageRoute(builder: (context) => const SignInScreen())
-          );
+          ToastHelper.showSuccess(
+              context: context, message: 'Berhasil buat akun');
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const SignInScreen()));
         }
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         if (mounted) {
-          ToastHelper.showError(context: context, message: 'Email sudah terdaftar. Mohon gunakan email lain.');
+          ToastHelper.showError(
+              context: context,
+              message: 'Email sudah terdaftar. Mohon gunakan email lain.');
         }
       } else {
         if (mounted) {
@@ -111,7 +112,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
               ),
             ),
           ),
-          
+
           // Main Content
           SafeArea(
             child: FadeTransition(
@@ -138,7 +139,8 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                                   color: Colors.white,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.bluetopaz.withOpacity(0.2),
+                                      color:
+                                          AppColors.bluetopaz.withOpacity(0.2),
                                       blurRadius: 20,
                                       spreadRadius: 5,
                                     ),
@@ -153,9 +155,9 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             );
                           },
                         ),
-                        
+
                         const SizedBox(height: 40),
-                        
+
                         // Welcome Text
                         ShaderMask(
                           shaderCallback: (bounds) => const LinearGradient(
@@ -171,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ),
                         ),
-                        
+
                         const SizedBox(height: 10),
                         const Text(
                           "Start your journey with us",
@@ -181,9 +183,9 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             letterSpacing: 0.5,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Email Field
                         CustomTextField(
                           controller: _emailController,
@@ -191,16 +193,20 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                           hint: 'Enter your email',
                           icon: Icons.email_outlined,
                           validator: (value) {
-                            if (value?.isEmpty ?? true) return 'Email is required';
-                            if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Email is required';
+                            }
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value!)) {
                               return 'Enter valid email';
                             }
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Password Field
                         CustomTextField(
                           controller: _passwordController,
@@ -209,12 +215,16 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                           icon: Icons.lock_outline_rounded,
                           isPassword: true,
                           validator: (value) {
-                            if (value?.isEmpty ?? true) return 'Password is required';
-                            if (value!.length < 6) return 'Password must be at least 6 characters';
+                            if (value?.isEmpty ?? true) {
+                              return 'Password is required';
+                            }
+                            if (value!.length < 6) {
+                              return 'Password must be at least 6 characters';
+                            }
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
 
                         CustomTextField(
@@ -223,11 +233,13 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                           hint: 'Enter your Username',
                           icon: Icons.phone,
                           validator: (value) {
-                            if (value?.isEmpty ?? true) return 'Username is required';
+                            if (value?.isEmpty ?? true) {
+                              return 'Username is required';
+                            }
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
 
                         CustomTextField(
@@ -237,13 +249,15 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                           icon: Icons.phone,
                           isInputNumber: true,
                           validator: (value) {
-                            if (value?.isEmpty ?? true) return 'Phone Number is required';
+                            if (value?.isEmpty ?? true) {
+                              return 'Phone Number is required';
+                            }
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 15),
-                        
+
                         // Sign In Link
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -255,7 +269,8 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             TextButton(
                               onPressed: () => Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => const SignInScreen()),
                               ),
                               child: const Text(
                                 'Sign In',
@@ -267,9 +282,9 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                             ),
                           ],
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Sign Up Button
                         Container(
                           decoration: BoxDecoration(

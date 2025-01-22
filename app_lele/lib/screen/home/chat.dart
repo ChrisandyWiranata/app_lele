@@ -101,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendNotification(String token, String title, String body) async {
     final url =
-        Uri.parse('https://kelly-greenheron.onpella.app/send-notification');
+        Uri.parse('https://mature-auspicious-ice.glitch.me/send-notification');
     try {
       final response = await http.post(
         url,
@@ -114,10 +114,10 @@ class _ChatScreenState extends State<ChatScreen> {
       );
 
       if (response.statusCode != 200) {
-        print('Error sending notification: ${response.body}');
+        debugPrint('Error sending notification: ${response.body}');
       }
     } catch (e) {
-      print('Error sending notification: $e');
+      debugPrint('Error sending notification: $e');
     }
   }
 
@@ -189,14 +189,25 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             isCurrentUser
                 ? const SizedBox.shrink()
-                : ClipOval(
-                    child: Image.network(
-                      'https://media1.tenor.com/m/gmVSlMk1D6sAAAAd/bocchi-bocchi-the-rock.gif',
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                : widget.selectedUser['imageProfile'] != null &&
+                        widget.selectedUser['imageProfile'] != ''
+                    ? ClipOval(
+                        child: Image.network(
+                          widget.selectedUser['imageProfile'],
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 25,
+                        backgroundColor: AppColors.bluetopaz.withOpacity(0.1),
+                        child: const Icon(
+                          Icons.person,
+                          size: 25,
+                          color: AppColors.bluetopaz,
+                        ),
+                      ),
             const SizedBox(
               width: 10,
             ),

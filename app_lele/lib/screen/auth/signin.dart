@@ -1,7 +1,7 @@
 import 'package:app_lele/components/custom_text_field.dart';
 import 'package:app_lele/screen/main_screen.dart';
 import 'package:app_lele/screen/auth/signup.dart';
-import 'package:app_lele/widgets/useable/custom_toast.dart';
+import 'package:app_lele/components/custom_toast.dart';
 import 'package:app_lele/components/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

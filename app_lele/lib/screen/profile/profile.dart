@@ -148,10 +148,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
           child: ClipOval(
-            child: Image.network(
-              'https://media1.tenor.com/m/gmVSlMk1D6sAAAAd/bocchi-bocchi-the-rock.gif',
-              fit: BoxFit.cover,
-            ),
+            child: data['imageProfile'] != null && data['imageProfile'] != ''
+                ? Image.network(
+                    data['imageProfile'],
+                    fit: BoxFit.cover,
+                  )
+                : CircleAvatar(
+                    radius: 60,
+                    backgroundColor: AppColors.bluetopaz.withOpacity(0.1),
+                    child: const Icon(
+                      Icons.person,
+                      size: 60,
+                      color: AppColors.bluetopaz,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(height: 16),
@@ -246,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
-                maxLines: 2,
+                maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               ),
             ],

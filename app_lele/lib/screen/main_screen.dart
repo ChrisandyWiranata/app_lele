@@ -3,7 +3,6 @@ import 'package:app_lele/screen/home/add_product.dart';
 import 'package:app_lele/screen/profile/profile.dart';
 import 'package:app_lele/components/app_colors.dart';
 import 'package:app_lele/service/auth_service.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const HomeScreen(),
     const ProfileScreen(),
   ];
 
@@ -36,7 +34,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    requestNotificationPermissions();
     AuthService().saveToken();
 
     if (auth.currentUser != null) {
@@ -52,14 +49,6 @@ class _MainScreenState extends State<MainScreen> {
         }
       });
     }
-  }
-
-  Future<void> requestNotificationPermissions() async {
-    await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
   }
 
   @override
@@ -117,8 +106,6 @@ class _MainScreenState extends State<MainScreen> {
           child: BottomNavigationBar(
             items: [
               _buildNavItem(Icons.home_outlined, Icons.home, 'Home'),
-              _buildNavItem(
-                  Icons.receipt_long_outlined, Icons.receipt_long, 'Orders'),
               _buildNavItem(Icons.person_outline, Icons.person, 'Profile'),
             ],
             currentIndex: _currentIndex,

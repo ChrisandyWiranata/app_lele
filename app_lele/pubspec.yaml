@@ -28,6 +28,8 @@ dependencies:
   awesome_notifications_fcm: ^0.10.0
   fluttertoast: ^8.2.8
   google_mobile_ads: ^5.2.0
+  firebase_core_platform_interface: ^5.4.0
+  mockito: ^5.4.4
 
 dev_dependencies:
   flutter_test:
